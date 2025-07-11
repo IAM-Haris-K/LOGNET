@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NetFloweXplorer NFX - SIEM Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/scripts.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>
+            <span>🗽</span> NetFloweXplorer NFX
+        </h1>
+        <div class="subtitle">Real-time Security Information and Event Management</div>
+        <div class="notification">
+            🔔 <span id="alertCount" class="alert-count">0</span>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Events</h3>
+                <div class="value" id="totalEvents">{{ logs|length }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Critical Alerts</h3>
+                <div class="value" id="criticalAlerts">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Sources Active</h3>
+                <div class="value" id="activeSources">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Events/Min</h3>
+                <div class="value" id="eventsPerMin">0</div>
+            </div>
+        </div>
+
+        <div class="last-updated" style="text-align: right; margin-bottom: 0.5rem; color: #cfa56a; font-size: 0.8rem;">
+            Last Updated: <span id="lastUpdated">--</span>
+        </div>
+
+        <div class="content-grid">
+            <div class="logs-panel">
+                <div class="panel-header">
+                    <h2>🔍 Event Logs</h2>
+                    <div class="panel-controls">
+                        <div class="log-type-filter">
+                            <button class="filter-btn active" data-type="all">All</button>
+                            <button class="filter-btn" data-type="application">Application</button>
+                            <button class="filter-btn" data-type="system">System</button>
+                            <button class="filter-btn" data-type="security">Security</button>
+                            <button class="filter-btn" data-type="network">Network</button>
+                        </div>
+                        <button class="btn" onclick="fetchAndUpdate()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <div class="logs-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Type</th>
+                                <th>Level</th>
+                                <th>Source</th>
+                                <th>Message</th>
+                                <th>Host</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTable">
+                            {% for log in logs %}
+                            <tr data-type="{{ log.log_type or log.source or 'system' }}">
+                                <td>{{ log.received_at }}</td>
+                                <td>
+                                    <span class="log-type type-{{ log.log_type or log.source or 'system' }}">
+                                        {{ (log.log_type or log.source or 'system')|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="log-level level-{{ (log.level or 'info')|lower }}">
+                                        {{ log.level or 'INFO' }}
+                                    </span>
+                                </td>
+                                <td>{{ log.source or 'N/A' }}</td>
+                                <td>{{ log.message or 'N/A' }}</td>
+                                <td>{{ log.host or 'N/A' }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 2rem; color: #cfa56a;">
+                                    No events received yet. Start the client to begin monitoring.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="charts-panel">
+                <div class="chart-container">
+                    <div class="chart-title">Event Levels Distribution</div>
+                    <div class="chart-wrapper">
+                        <canvas id="levelChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Event Types</div>
+                    <div class="chart-wrapper">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-panel">
+            <div class="panel-header">
+                <h2>🤖 SIEM Analysis Engine</h2>
+            </div>
+            <div class="analysis-content" id="analysisContent">
+                Loading security analysis...
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🔐 Enterprise Security Monitoring • End-to-End Encryption Active</p>
+    </div>
+</body>
+</html>
+'''
