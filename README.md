@@ -1,116 +1,89 @@
-#LogNet
-Secure Windows Event Log Collector & Analyzer
-LogNet is a lightweight cybersecurity project for collecting, encrypting, transmitting, and analyzing Windows event logs.
-It enables real-time monitoring of systems, helps detect suspicious activity, and maintains a secure audit trail.
-Designed with simplicity and security in mind, it’s ideal for SOC teams, incident responders, and system administrators.
+# LogNet
+A simple, secure Python-based system for collecting, encrypting, transmitting, and analyzing Windows Event Logs.
+Ideal for system administrators, SOC teams, and cybersecurity enthusiasts to monitor system activity and detect suspicious patterns.
 
-Features
-Agent
-Collects Windows Event Logs from Application, System, Security, and Setup.
+ # ⚠️ Legal Disclaimer
+This project is intended strictly for educational and authorized monitoring purposes.
+Do not deploy this software on any systems you do not own or do not have explicit permission to monitor.
+Unauthorized surveillance is illegal and unethical.
 
-Encrypts each log using Fernet (AES-CBC + HMAC).
+✨ Features
+ Collects Windows Event Logs (Application, System, Security, Setup)
+ Encrypts logs using Fernet (AES + HMAC) for end-to-end security
+ Transmits logs over HTTPS to a Flask server
+ Stores the last 1000 logs in memory
+ Web dashboard to view logs and run automated analysis
+ Detects repeated failed logins, suspicious keywords, spikes in errors, and top event IDs
 
-Transmits logs securely over HTTPS to the server.
+🛠 Requirements
+For the agent
+🖥️ Windows machine
 
-Simple GUI to select log types and start/stop the agent.
+Python 3.x
 
-Server
-Flask-based server that receives encrypted logs, decrypts, and stores them.
-
-Web dashboard displays latest logs (up to 1000 stored in memory).
-
-Runs automated analysis for common suspicious patterns (failed logins, malware keywords, repeated errors).
-
-REST API to fetch logs and analysis in JSON format.
-
-Dashboard
-View recent logs in real time.
-
-Summary of top event IDs, recent error spikes, repeated failed login attempts, and detected suspicious keywords.
-
-Tech Stack
-Python (Flask, Cryptography, Requests, pywin32)
-
-HTML and Tailwind CSS for frontend dashboard
-
-Windows Event Log API (via pywin32)
-
-JSON over HTTPS
-
-Quick Start
-Server
-Clone the repository and install dependencies.
+Libraries:
 
 bash
 Copy
 Edit
-git clone https://github.com/yourusername/lognet.git
-cd lognet
-pip install -r requirements.txt
-Run the Flask server:
+pip install pywin32 cryptography requests
+For the server
+Linux / Windows / Mac
+
+Python 3.x
+
+Libraries:
 
 bash
 Copy
 Edit
-python app.py
-Access the dashboard at:
-http://localhost:5000
-
-Agent
-Run on any Windows machine you wish to monitor.
-
+pip install flask cryptography
+🚀 Getting Started
+🔌 Run the server
 bash
 Copy
 Edit
-python Agent.py
-Use the GUI to select which log types to monitor.
+python server.py
+It will start on http://localhost:5000.
 
-Click Start Agent.
-The agent will begin reading logs, encrypting them, and sending to the server.
-
-Encryption
-This project uses Fernet for end-to-end encryption of logs.
-
-AES-128 (CBC mode) with HMAC SHA256 for message integrity.
-
-The same FERNET_KEY must be configured on both the server and the agent.
-
-Example Analysis Output
-pgsql
+🖥️ Run the agent on Windows
+bash
 Copy
 Edit
-Log counts by level: {'INFO': 56, 'WARNING': 5, 'ERROR': 3}
-Top event IDs in last 100 logs: [(4624, 8), (4625, 5)]
-Repeated failed login attempts: {'192.168.1.45': 6}
-Suspicious keywords found: {'unauthorized': 3, 'malware': 1}
-API Endpoints
-POST /api/logs
-Receives encrypted log data.
+python agent.py
+Or run silently (no console window):
 
-GET /api/logs
-Returns the current list of decrypted logs in JSON.
+cmd
+Copy
+Edit
+pythonw.exe agent.py
+⚙️ Configuration
+Edit the agent script to set your:
 
-POST /api/analyze
-Accepts a JSON list of logs, returns analysis summary.
+python
+Copy
+Edit
+SERVER_URL = "https://yourserver.com"
+FERNET_KEY = b'your-generated-fernet-key'
+Choose which logs to monitor in the GUI when starting the agent.
 
-Roadmap
-Add optional email or Slack alerts on suspicious detections.
+📝 Analysis & Dashboard
+View logs in real-time on the web dashboard at http://localhost:5000
 
-Support exporting logs and analysis to CSV or JSON.
+Click Analyze to get insights:
 
-Build multi-host overview for monitoring multiple agents.
+Log levels count
 
-Provide Docker deployment options.
+Top event IDs
 
-Contributing
-Contributions are welcome. Please fork this repository, create a feature branch, and submit a pull request.
+Repeated failed login sources
 
-License
+Suspicious keywords
+
+❤️ Contributing
+Pull requests and issues are welcome!
+If you’d like to add new detection rules or improve the UI, please open a PR.
+
+📜 License
 This project is licensed under the MIT License.
-
-Example Configuration
-ini
-Copy
-Edit
-FERNET_KEY = Cp0Ekjev9SEORvIhHdLACGri-88AY5i17lSsO7pN5-E=
-SERVER_URL = http://localhost:5000
+Use responsibly.
